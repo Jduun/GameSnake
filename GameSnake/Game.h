@@ -17,6 +17,7 @@ private:
 	Snake* snake;
 	Cell* food;
 
+	void set_color(int color = 7);
 	void hide_cursor();
 	void set_cursor(int x, int y);
 	void draw_cell(int x, int y, char c);

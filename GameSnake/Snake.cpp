@@ -4,10 +4,11 @@ void Snake::set_direction(int _direction)
 {
 	if (get_length() > 1)
 	{
-		if (_direction == RIGHT && direction != LEFT) direction = RIGHT;
-		if (_direction == LEFT && direction != RIGHT) direction = LEFT;
-		if (_direction == UP && direction != DOWN) direction = UP;
-		if (_direction == DOWN && direction != UP) direction = DOWN;
+		if ((_direction == RIGHT && direction != LEFT) ||
+			(_direction == LEFT && direction != RIGHT) ||
+			(_direction == UP && direction != DOWN)    ||
+			(_direction == DOWN && direction != UP))
+			direction = _direction;
 	}
 	else if (_direction == RIGHT || _direction == LEFT || _direction == DOWN || _direction == UP)
 	{
@@ -53,16 +54,10 @@ void Snake::grow()
 	}
 	switch (direction)
 	{
-	case RIGHT:
-		body[0].x++;
-		break;
-	case LEFT:
-		body[0].x--;
-		break;
-	case UP:
-		body[0].y--;
-	case DOWN:
-		body[0].y++;
+	case RIGHT: body[0].x++; break;
+	case LEFT: body[0].x--; break;
+	case UP: body[0].y--; break;
+	case DOWN: body[0].y++; break;
 	}
 }
 

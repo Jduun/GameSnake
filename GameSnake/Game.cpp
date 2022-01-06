@@ -1,4 +1,10 @@
-#include "Game.h"
+﻿#include "Game.h"
+
+void Game::set_color(int color)
+{
+	HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+	SetConsoleTextAttribute(handle, color);
+}
 
 void Game::hide_cursor()
 {
@@ -55,14 +61,26 @@ void Game::set_food()
 
 void Game::draw_field()
 {
+	system("cls");
 	set_cursor(0, 0);
 	std::cout << "(" << snake->get_head()->x << ", " << snake->get_head()->y << ") [" << height << "x" << width << "]";
-	system("cls");
 	for (auto cell : *snake->get_body())
 	{
-		draw_cell(cell.x, cell.y, '*');
+		if (cell.x == snake->get_head()->x && cell.y == snake->get_head()->y)
+		{
+			set_color(15);
+			draw_cell(cell.x, cell.y, 'O');
+		}
+		else
+		{
+			set_color(4);
+			draw_cell(cell.x, cell.y, 'o');
+		}
+		set_color();
 	}
-	draw_cell(food->x, food->y, 'x');
+	set_color(10);
+	draw_cell(food->x, food->y, '*');
+	set_color();
 }
 
 void Game::input()
@@ -73,20 +91,11 @@ void Game::input()
 		{
 			switch (_getch())
 			{
-			case 72:
-				snake->set_direction(UP);
-				break;
-			case 75:
-				snake->set_direction(LEFT);
-				break;
-			case 77:
-				snake->set_direction(RIGHT);
-				break;
-			case 80:
-				snake->set_direction(DOWN);
-				break;
-			default:
-				break;
+			case 72: snake->set_direction(UP); break;
+			case 75: snake->set_direction(LEFT); break;
+			case 77: snake->set_direction(RIGHT); break;
+			case 80: snake->set_direction(DOWN); break;
+			default: break;
 			}
 		}
 	}
@@ -98,8 +107,8 @@ bool Game::game_over()
 		snake->get_head()->y > height ||
 		snake->get_head()->x < 0 ||
 		snake->get_head()->y < 0)
-		return false;
-
+		return true;
+		
 	int count = 0;
 	for (auto cell : *snake->get_body())
 	{
