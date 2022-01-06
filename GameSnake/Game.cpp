@@ -62,6 +62,23 @@ void Game::set_food()
 void Game::draw_field()
 {
 	system("cls");
+	set_color(9);
+	set_cursor(0, 0);
+	std::cout << "+";
+	for (int i = 0; i <= width; i++) std::cout << "-";
+	std::cout << "+\n";
+	for (int i = 0; i <= height; i++)
+	{
+		set_cursor(0, i + 1);
+		std::cout << "|";
+		set_cursor(width + 2, i + 1);
+		std::cout << "|";
+	}
+	set_cursor(0, height + 2);
+	std::cout << "+";
+	for (int i = 0; i <= width; i++) std::cout << "-";
+	std::cout << "+\n";
+	set_color();
 	set_cursor(0, 0);
 	std::cout << "(" << snake->get_head()->x << ", " << snake->get_head()->y << ") [" << height << "x" << width << "]";
 	for (auto cell : *snake->get_body())
@@ -69,17 +86,17 @@ void Game::draw_field()
 		if (cell.x == snake->get_head()->x && cell.y == snake->get_head()->y)
 		{
 			set_color(15);
-			draw_cell(cell.x, cell.y, 'O');
+			draw_cell(cell.x + 1, cell.y + 1, 'O');
 		}
 		else
 		{
 			set_color(4);
-			draw_cell(cell.x, cell.y, 'o');
+			draw_cell(cell.x + 1, cell.y + 1, 'o');
 		}
 		set_color();
 	}
 	set_color(10);
-	draw_cell(food->x, food->y, '*');
+	draw_cell(food->x + 1, food->y + 1, '*');
 	set_color();
 }
 
@@ -132,7 +149,7 @@ void Game::tact()
 	}
 	input();
 	draw_field();
-	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	std::this_thread::sleep_for(std::chrono::milliseconds(50));
 }
 
 Game::Game(Snake* _snake, int _height, int _width)
