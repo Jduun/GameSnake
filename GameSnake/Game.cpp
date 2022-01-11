@@ -61,43 +61,84 @@ void Game::set_food()
 
 void Game::draw_field()
 {
-	system("cls");
-	set_color(9);
-	set_cursor(0, 0);
-	std::cout << "+";
-	for (int i = 0; i <= width; i++) std::cout << "-";
-	std::cout << "+\n";
+	hide_cursor();
+	set_cursor(width + 10, 0);
+	set_color();
+	std::cout << "Score: " << snake->get_length();
+	set_color();
+
+	std::vector<std::vector<char>> new_map(height + 3, std::vector<char>(width + 3, ' '));
+    new_map[0][0] = CORNER;
+	for (int i = 0; i <= width; i++)
+	{
+		new_map[0][i + 1] = HORIZONTAL_BOUND;
+	}
+	new_map[0][width + 2] = CORNER;
 	for (int i = 0; i <= height; i++)
 	{
-		set_cursor(0, i + 1);
-		std::cout << "|";
-		set_cursor(width + 2, i + 1);
-		std::cout << "|";
+		set_color(10);
+		new_map[i + 1][0] = VERTICAL_BOUND;
+		new_map[i + 1][width + 2] = VERTICAL_BOUND;
+		set_color();
 	}
-	set_cursor(0, height + 2);
-	std::cout << "+";
-	for (int i = 0; i <= width; i++) std::cout << "-";
-	std::cout << "+\n";
-	set_color();
-	set_cursor(0, 0);
-	std::cout << "(" << snake->get_head()->x << ", " << snake->get_head()->y << ") [" << height << "x" << width << "]";
+	new_map[height + 2][0] = CORNER;
+	for (int i = 0; i <= width; i++)
+	{
+		new_map[height + 2][i + 1] = HORIZONTAL_BOUND;
+	}
+	new_map[height + 2][width + 2] = CORNER;
 	for (auto cell : *snake->get_body())
 	{
 		if (cell.x == snake->get_head()->x && cell.y == snake->get_head()->y)
 		{
-			set_color(15);
-			draw_cell(cell.x + 1, cell.y + 1, 'O');
+			new_map[cell.y + 1][cell.x + 1] = HEAD;
 		}
 		else
 		{
-			set_color(4);
-			draw_cell(cell.x + 1, cell.y + 1, 'o');
+			new_map[cell.y + 1][cell.x + 1] = TAIL;
 		}
-		set_color();
 	}
-	set_color(10);
-	draw_cell(food->x + 1, food->y + 1, '*');
-	set_color();
+	new_map[food->y + 1][food->x + 1] = FOOD;
+
+	for (int i = 0; i < height + 3; i++)
+	{
+		for (int j = 0; j < width + 3; j++)
+		{
+			if (map[i][j] != new_map[i][j])
+			{
+				int color;
+				switch (new_map[i][j])
+				{
+				case VERTICAL_BOUND:
+					color = 9;
+					break;
+				case CORNER:
+					color = 9;
+					break;
+				case HORIZONTAL_BOUND:
+					color = 9;
+					break;
+				case HEAD:
+					color = 15;
+					break;
+				case TAIL:
+					color = 4;
+					break;
+				case FOOD:
+					color = 10;
+					break;
+				default:
+					color = 7;
+					break;
+				}
+				set_cursor(j, i);
+				set_color(color);
+				std::cout << new_map[i][j];
+				set_color();
+			}
+		}
+	}
+	map = new_map;
 }
 
 void Game::input()
@@ -149,7 +190,10 @@ void Game::tact()
 	}
 	input();
 	draw_field();
-	std::this_thread::sleep_for(std::chrono::milliseconds(50));
+	int speed = 40;
+	if (snake->get_direction() == RIGHT || snake->get_direction() == LEFT)
+		std::this_thread::sleep_for(std::chrono::milliseconds(speed));
+	else std::this_thread::sleep_for(std::chrono::milliseconds((int)(2.4 * speed)));
 }
 
 Game::Game(Snake* _snake, int _height, int _width)
@@ -157,6 +201,11 @@ Game::Game(Snake* _snake, int _height, int _width)
 	snake = _snake;
 	height = _height;
 	width = _width;
+	for (int i = 0; i < height + 3; i++)
+	{
+		std::vector<char> str(width + 3, ' ');
+		map.push_back(str);
+	}
 	set_food();
 }
 

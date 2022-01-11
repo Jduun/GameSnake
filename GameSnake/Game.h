@@ -9,6 +9,16 @@
 #include <stdio.h>
 #include <conio.h>
 
+enum Elements
+{
+	HEAD = 'O',
+	TAIL = 'o',
+	FOOD = '*',
+	CORNER = '+',
+	HORIZONTAL_BOUND = '-',
+	VERTICAL_BOUND = '|'
+};
+
 class Game
 {
 private:
@@ -16,6 +26,7 @@ private:
 	int width;
 	Snake* snake;
 	Cell* food;
+	std::vector<std::vector<char>> map;
 
 	void set_color(int color = 7);
 	void hide_cursor();

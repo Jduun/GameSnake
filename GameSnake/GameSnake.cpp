@@ -7,7 +7,7 @@ int main()
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
     int height = 20;
-    int width = 50;
+    int width = 60;
     Snake* snake = new Snake(width / 2, height / 2);
     Game* game = new Game(snake, height, width);
     bool exit = false;
